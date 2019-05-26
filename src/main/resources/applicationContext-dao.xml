@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd">
+
+   <!-- <context:property-placeholder location="classpath:properties/jdbc.properties" />-->
+    <!-- 配置druid -->
+    <!-- 2.创建一个C3p0的连接池 -->
+    <bean id="c3p0DataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!-- 设置连接数据库的参数 -->
+        <property name="driverClass" value="com.mysql.jdbc.Driver" />
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/oa1810" />
+        <property name="user" value="root" />
+        <property name="password" value="123" />
+    </bean>
+    <!-- 2.管理sessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="dataSource" ref="c3p0DataSource"/>
+        <property name="mapperLocations">
+            <array>
+                <value>classpath:mapper/*.xml</value>
+            </array>
+        </property>
+        <property name="typeAliasesPackage" value="com.qf.entity"/>
+    </bean>
+
+    <!-- 3.管理这些Mapper -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.qf.mapper"/>
+    </bean>
+
+</beans>

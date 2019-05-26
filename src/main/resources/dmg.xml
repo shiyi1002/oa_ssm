@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+        <!--不生成注释-->
+        <commentGenerator>
+            <property name="suppressAllComments" value="true" />
+        </commentGenerator>
+        <!--配置数据库连接-->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/oa1810"
+                        userId="root"
+                        password="123">
+        </jdbcConnection>
+
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+        <!--指定java实体类生成的地方-->
+        <javaModelGenerator targetPackage="com.qf.entity" targetProject=".\src\main\java">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+        <!--指定指定sql映射文件生成的地方-->
+        <sqlMapGenerator targetPackage="mapper"  targetProject=".\src\main\resources">
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+        <!--指定指定dao接口生成的地方-->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.qf.mapper"  targetProject=".\src\main\java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+        <!--指定指定table表生成的设置
+        tableName表名,domainObjectName是类名
+        -->
+      <!--  <table  tableName="sys_area" domainObjectName="SysArea"  enableCountByExample="false" enableUpdateByExample="false"
+                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+
+        <table  tableName="sys_menu" domainObjectName="SysMenu"  enableCountByExample="false" enableUpdateByExample="false"
+                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+
+        <table  tableName="sys_org" domainObjectName="SysOrg"  enableCountByExample="false" enableUpdateByExample="false"
+                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+
+        <table  tableName="sys_role" domainObjectName="SysRole"  enableCountByExample="false" enableUpdateByExample="false"
+                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+
+        <table  tableName="sys_user" domainObjectName="SysUser"  enableCountByExample="false" enableUpdateByExample="false"
+                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+-->
+        <table  tableName="sys_purchase" domainObjectName="SysPurchase"  enableCountByExample="false" enableUpdateByExample="false"
+                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+
+    </context>
+</generatorConfiguration>

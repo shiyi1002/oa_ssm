@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+            <!--缓存管理器-->
+        <bean id="ehCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+            <property name="cacheManagerConfigFile" value="classpath:ehcache.xml"></property>
+        </bean>
+
+
+
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <!--<property name="cacheManager" ref="cacheManager"/>-->
+        <property name="realm" ref="myRealm"/>
+        <!--引入缓存-->
+        <property name="cacheManager" ref="ehCacheManager"></property>
+    </bean>
+
+    <bean id="myRealm" class="com.qf.realm.MyRealm">
+        <!--设置加密机制-->
+        <property name="credentialsMatcher">
+            <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+                <!-- 加密的算法 -->
+                <property name="hashAlgorithmName" value="MD5"></property>
+                <!--加密次数 -->
+                <property name="hashIterations" value="1024"></property>
+            </bean>
+        </property>
+    </bean>
+
+
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor"/>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+
+
+   <!--最核心-->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <!--设置登录的地址-->
+        <property name="loginUrl" value="/sysUser/login"/>
+
+        <!--设置没有权限的跳转的地址-->
+        <property name="unauthorizedUrl" value="/s/unauthorized"/>
+        <!--
+            过滤器链的定义
+            访问的资源=过滤器
+
+            anon:访问这个资源不需要经过认证
+            authc:访问这个资源必需要经过认证
+            user:可以访问记住我之后的所有资源(以记住我的方式访问资源)
+            logout:实现注销的效果
+        -->
+        <property name="filterChainDefinitions">
+            <value>
+               <!-- /favicon.ico = anon
+                /logo.png = anon
+                /shiro.css = anon
+                /s/login = anon
+                # allow WebStart to pull the jars for the swing app:
+                /*.jar = anon
+                # everything else requires authentication:
+                /** = authc-->
+                /sysUser/login=anon
+                /sysUser/checkLogin=anon
+                /sysUser/logout=logout
+                /css/**=anon
+                /images/**=anon
+                /lib/**=anon
+                /skin/**=anon
+                /js/**=anon
+            </value>
+        </property>
+    </bean>
+
+</beans>

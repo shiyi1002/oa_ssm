@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.mapper.SysRoleMapper">
+  <resultMap id="BaseResultMap" type="com.qf.entity.SysRole">
+    <id column="ROLE_ID" jdbcType="BIGINT" property="roleId" />
+    <result column="ROLE_NAME" jdbcType="VARCHAR" property="roleName" />
+    <result column="ROLE_DESC" jdbcType="VARCHAR" property="roleDesc" />
+    <result column="FLAG" jdbcType="BIT" property="flag" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ROLE_ID, ROLE_NAME, ROLE_DESC, FLAG, CREATE_TIME
+  </sql>
+
+  <select id="getList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_role where flag=1
+  </select>
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_role
+    where ROLE_ID = #{roleId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_role
+    where ROLE_ID = #{roleId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qf.entity.SysRole">
+    insert into sys_role (ROLE_ID, ROLE_NAME, ROLE_DESC, 
+      FLAG, CREATE_TIME)
+    values (#{roleId,jdbcType=BIGINT}, #{roleName,jdbcType=VARCHAR}, #{roleDesc,jdbcType=VARCHAR}, 
+      #{flag,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qf.entity.SysRole">
+    insert into sys_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        ROLE_ID,
+      </if>
+      <if test="roleName != null">
+        ROLE_NAME,
+      </if>
+      <if test="roleDesc != null">
+        ROLE_DESC,
+      </if>
+      <if test="flag != null">
+        FLAG,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="roleName != null">
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleDesc != null">
+        #{roleDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null">
+        #{flag,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qf.entity.SysRole">
+    update sys_role
+    <set>
+      <if test="roleName != null">
+        ROLE_NAME = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleDesc != null">
+        ROLE_DESC = #{roleDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null and flag!=''">
+        FLAG = #{flag,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ROLE_ID = #{roleId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qf.entity.SysRole">
+    update sys_role
+    set ROLE_NAME = #{roleName,jdbcType=VARCHAR},
+      ROLE_DESC = #{roleDesc,jdbcType=VARCHAR},
+      FLAG = #{flag,jdbcType=BIT},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+    where ROLE_ID = #{roleId,jdbcType=BIGINT}
+  </update>
+  <!--假删除-->
+  <update id="updateFlagById" parameterType="Long" >
+    update sys_role set flag=0 where ROLE_ID = #{roleId,jdbcType=BIGINT}
+  </update>
+  <!--批量假删除-->
+<update id="updateFlagByIds" >
+  update sys_role set flag=0 where role_id IN
+  <foreach collection="list" separator="," open="(" close=")" item="roleId">
+    #{roleId}
+  </foreach>
+</update>
+  <!--批量授权用户-->
+  <insert id="batchAdd" >
+    insert into sys_role_user(USER_ID,ROLE_ID)values
+
+    <foreach collection="ids" item="user_id"  separator=",">
+      (#{user_id},#{roleId})
+    </foreach>
+  </insert>
+  <!--解除授权用户与角色关系-->
+  <delete id="delRoleAndUser">
+    delete from sys_role_user where user_id=#{userId} and role_id=#{roleId}
+  </delete>
+  <!--批量授权菜单-->
+  <insert id="batchAddMenu">
+    insert into sys_role_menu(menu_id,ROLE_ID)values
+
+    <foreach collection="ids" item="menu_id"  separator=",">
+      (#{menu_id},#{roleId})
+    </foreach>
+  </insert>
+
+  <!--解除菜单与角色关系-->
+  <delete id="delRoleAndMenu">
+    delete from sys_role_menu where menu_id=#{menuId} and ROLE_ID=#{roleId}
+  </delete>
+</mapper>
