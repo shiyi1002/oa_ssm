@@ -51,6 +51,12 @@ public class SysOrgServiceImpl extends BaseServiceImpl<SysOrg> implements SysOrg
             sysResult.setResult(true);
         }
         return sysResult;
+
+
+
+
+
+
     }
 
     public SysResult updateFlagByIdList(List<Long> idList) {
